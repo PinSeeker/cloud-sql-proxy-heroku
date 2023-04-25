@@ -5,40 +5,41 @@ set -e
 BUILD_DIR=$1
 CACHE_DIR=$2
 ENV_DIR=$3
-CACHED_BINARY=$CACHE_DIR/cloud_sql_proxy
+CACHED_BINARY=$CACHE_DIR/cloud-sql-proxy
 
 if [ ! -f $CACHED_BINARY ]; then
-	echo "-----> Downloading cloud_sql_proxy"
-	mkdir -p $CACHE_DIR
-	wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O $CACHED_BINARY
+  echo "-----> Downloading cloud-sql-proxy"
+  mkdir -p $CACHE_DIR
+  wget https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.2.0/cloud-sql-proxy.linux.amd64 -O $CACHED_BINARY
 else
-  echo "-----> Found cloud_sql_proxy in the build cache"
+  echo "-----> Found cloud-sql-proxy in the build cache"
 fi
 
 chmod +x $CACHED_BINARY
 VERSION=`$CACHED_BINARY --version`
 echo "       Using version: $VERSION"
 
-echo "-----> Vendoring cloud_sql_proxy into slug"
+echo "-----> Vendoring cloud-sql-proxy into slug"
 if [ ! -d $BUILD_DIR/google/bin ]; then
-	mkdir -p $BUILD_DIR/google/bin
+  mkdir -p $BUILD_DIR/google/bin
 fi
-cp $CACHE_DIR/cloud_sql_proxy $BUILD_DIR/google/bin
-chmod +x $BUILD_DIR/google/bin/cloud_sql_proxy
+cp $CACHE_DIR/cloud-sql-proxy $BUILD_DIR/google/bin
+chmod +x $BUILD_DIR/google/bin/cloud-sql-proxy
 PATH="$BUILD_DIR/google/bin:$PATH"
 
 if [ ! -d $BUILD_DIR/bin ]; then
-	mkdir $BUILD_DIR/bin
+  mkdir $BUILD_DIR/bin
 fi
 
-# echo "-----> Create socket dir"
-# mkdir -p /cloudsql
+if [ ! -f $BUILD_DIR/google/credentials.json ]; then
+  touch $BUILD_DIR/google/credentials.json
+fi
 
-cat >$BUILD_DIR/bin/run_cloud_sql_proxy <<EOF
+cat >$BUILD_DIR/bin/run-cloud-sql-proxy <<EOF
 #!/bin/sh
-printf "%s" "\$GSP_CREDENTIALS" > /app/google/credentials.json
-exec /app/google/bin/cloud_sql_proxy -credential_file=/app/google/credentials.json -instances=\$GSP_INSTANCES -dir=/tmp &
+printf "%s" "\$GCP_CREDENTIALS" > $BUILD_DIR/google/credentials.json
+exec $BUILD_DIR/google/bin/cloud-sql-proxy -c $BUILD_DIR/google/credentials.json -p $GSP_PORT &
 EOF
-chmod +x $BUILD_DIR/bin/run_cloud_sql_proxy
+chmod +x $BUILD_DIR/bin/run-cloud-sql-proxy
 
 exit 0
