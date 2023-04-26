@@ -37,8 +37,8 @@ fi
 
 cat >$BUILD_DIR/bin/run-cloud-sql-proxy <<EOF
 #!/bin/sh
-printf "%s" "\$GCP_CREDENTIALS" > $BUILD_DIR/google/credentials.json
-exec $BUILD_DIR/google/bin/cloud-sql-proxy -c $BUILD_DIR/google/credentials.json -p $GSP_PORT &
+echo "$(cat $ENV_DIR/GCP_CREDENTIALS)" > /app/google/credentials.json
+exec /app/google/bin/cloud-sql-proxy -c /app/google/credentials.json -p $(cat $ENV_DIR/GCP_PORT) &
 EOF
 chmod +x $BUILD_DIR/bin/run-cloud-sql-proxy
 
