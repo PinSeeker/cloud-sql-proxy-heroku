@@ -16,7 +16,7 @@ Add the proxy to your buildpacks. It's important that this buildpack should
 not be the last one in the list, as that's used by heroku to determine your
 startup processes. (--index=1)
 
-     heroku buildpacks:add --index=1 luisp128/cloud-sql-proxy-heroku
+     heroku buildpacks:add --index=1 https://github.com/luisp128/cloud-sql-proxy-heroku
 
 Add the GCP JSON credentials as `GCP_CREDENTIALS` env variable to you app.
 
