@@ -23,6 +23,8 @@ Add the GCP JSON credentials as `GCP_CREDENTIALS` env variable to you app.
 Set the port the proxy should connect to with the `GCP_PORT` env
 variable.
 
+Add the sql instance connection name in the `GCP_INSTANCE_CONNECTION_NAME` env variable.
+
 Set the connection string for your DB library to
 `postgres://<username>:<password>@localhost:$GCP_PORT/<database-name>`
 
