@@ -11,7 +11,7 @@ if [ ! -d $BUILD_DIR/google/bin ]; then
   mkdir -p $BUILD_DIR/google/bin
 fi
 
-wget https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.7.1/cloud-sql-proxy.linux.amd64 -O $BUILD_DIR/google/bin/cloud-sql-proxy
+wget https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.7.1/cloud-sql-proxy.linux.amd64 -nv -O $BUILD_DIR/google/bin/cloud-sql-proxy
 chmod +x $BUILD_DIR/google/bin/cloud-sql-proxy
 
 VERSION=`$BUILD_DIR/google/bin/cloud-sql-proxy --version`
