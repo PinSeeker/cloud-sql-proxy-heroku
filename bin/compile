@@ -28,6 +28,13 @@ fi
 cat >$BUILD_DIR/bin/run-cloud-sql-proxy <<EOF
 #!/bin/sh
 echo '$(cat $ENV_DIR/CSQL_PROXY_CREDENTIALS)' > /app/google/credentials.json
+
+for env_var in $(ls $ENV_DIR); do
+  echo "$env_var" | grep -E "CSQL_PROXY_.*" &&
+  export "$env_var=$(cat $ENV_DIR/$env_var)"
+  :
+done
+
 exec /app/google/bin/cloud-sql-proxy -c /app/google/credentials.json &
 EOF
 chmod +x $BUILD_DIR/bin/run-cloud-sql-proxy
