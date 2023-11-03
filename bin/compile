@@ -25,12 +25,12 @@ if [ ! -f $BUILD_DIR/google/credentials.json ]; then
   touch $BUILD_DIR/google/credentials.json
 fi
 
-cat >$BUILD_DIR/bin/run-cloud-sql-proxy <<EOF
+cat >$BUILD_DIR/bin/run_cloud_sql_proxy <<EOF
 #!/bin/sh
 printf "%s" "\$CSQL_PROXY_CREDENTIALS" | base64 --decode > /app/google/credentials.json
 
 exec /app/google/bin/cloud-sql-proxy -c /app/google/credentials.json &
 EOF
-chmod +x $BUILD_DIR/bin/run-cloud-sql-proxy
+chmod +x $BUILD_DIR/bin/run_cloud_sql_proxy
 
 exit 0
